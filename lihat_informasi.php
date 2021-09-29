@@ -1,0 +1,79 @@
+<fieldset>
+  <legend></legend>
+
+  <?php
+  $carikode = mysqli_query($koneksi, "SELECT max(id) from tb_informasi") or die (mysqli_error());
+  ?>
+
+  <form action="" method="post" enctype="multipart/form-data">
+    <table>
+      <tr>
+        <td>ID</td>
+        <td> : </td>
+        <td><input type="text" name="id"/></td>
+      </tr>
+      <tr>
+        <td>Judul</td>
+        <td> : </td>
+        <td><input type="text" name="judul"/></td>
+      </tr>
+
+      <tr>
+        <td>Gambar</td>
+        <td>: </td>
+        <td><input type="file" name="gambar"/></td>
+      </tr>
+
+      <tr>
+        <td>Deskripsi</td>
+        <td> : </td>
+        <td><textarea name='deskripsi' class="deskripsi" placeholder='deskripsi'></textarea></td>
+      </tr>
+      
+      <tr>
+        <td></td>
+        <td> : </td>
+        <td><input type="submit" name="tambah" value="Tambah"/> <input type="reset" value="Reset"/></td>
+      </tr>
+    </table>
+  </form>
+
+  <?php
+  $id = @$_POST['id'];
+  $judul = @$_POST['judul'];
+  $deskripsi = @$_POST['deskripsi'];
+
+  $asal = @$_FILES['gambar']['tmp_name'];
+  $target = 'img/';
+  $nama_gambar = @$_FILES['gambar']['name'];
+
+  $tambah_informasi = @$_POST['tambah'];
+
+  if($tambah_informasi){
+    if($id== "" || $judul=="" || $nama_gambar== "" || $deskripsi==""){
+      ?>
+      <script type="text/javascript">
+      alert("Inputan tidak boleh ada yang kosong");
+      </script>
+      <?php 
+    } else {
+      $pindah = move_uploaded_file($asal, $target.$nama_gambar);
+      if($pindah){
+        mysqli_query($koneksi, "INSERT into tb_informasi values ('$id', '$judul', '$nama_gambar', '$deskripsi')") or die(mysqli_error());
+        ?>
+        <script type="text/javascript">
+        alert("tambah informasi baru, berhasil!");
+        window.location.href="?page=informasi";
+        </script>
+        <?php
+      } else {
+        ?>
+        <script type="text/javascript">
+        alert("Gambar gagal di upload");
+        </script>
+        <?php
+      }
+    }
+  }
+  ?>
+</fieldset>
